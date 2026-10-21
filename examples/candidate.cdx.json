@@ -1,0 +1,24 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "metadata": {
+    "component": { "type": "application", "name": "sample-service", "version": "2.0" }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "libcurl",
+      "version": "8.5.0",
+      "purl": "pkg:generic/libcurl@8.5.0",
+      "hashes": [{ "alg": "SHA-256", "content": "90cd" }],
+      "licenses": [{ "license": { "id": "curl" } }]
+    },
+    {
+      "type": "library",
+      "name": "new-helper",
+      "version": "2.0",
+      "purl": "pkg:generic/new-helper@2.0",
+      "licenses": [{ "license": { "id": "MIT" } }]
+    }
+  ]
+}

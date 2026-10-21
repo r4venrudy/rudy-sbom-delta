@@ -1,0 +1,78 @@
+name: Build release packages
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Package ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux-x64
+            archive: tar.gz
+          - os: macos-latest
+            platform: macos
+            archive: tar.gz
+          - os: windows-latest
+            platform: windows-x64
+            archive: zip
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --config Release --parallel
+      - name: Test
+        run: ctest --test-dir build -C Release --output-on-failure
+      - name: Package on Linux and macOS
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          cmake --install build --prefix package
+          cp LICENSE README.md package/
+          tar -czf "rudy-sbom-delta-${{ matrix.platform }}.tar.gz" -C package .
+      - name: Package on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          cmake --install build --config Release --prefix package
+          Copy-Item LICENSE, README.md -Destination package
+          Compress-Archive -Path package\* -DestinationPath rudy-sbom-delta-${{ matrix.platform }}.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rudy-sbom-${{ matrix.platform }}
+          path: rudy-sbom-delta-${{ matrix.platform }}.${{ matrix.archive }}
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-assets:
+    name: Attach checksummed release assets
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rudy-sbom-*
+          path: release-assets
+          merge-multiple: true
+      - name: Generate SHA-256 checksums
+        working-directory: release-assets
+        run: sha256sum rudy-sbom-delta-* > SHA256SUMS
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: release-assets/*
+          overwrite_files: true
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
