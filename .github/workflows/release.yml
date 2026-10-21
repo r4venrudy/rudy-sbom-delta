@@ -3,6 +3,13 @@ name: Build release packages
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing tag to rebuild and refresh its release assets
+        required: true
+        default: v0.1.0
+        type: string
 
 permissions:
   contents: read
@@ -25,7 +32,9 @@ jobs:
             platform: windows-x64
             archive: zip
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.release_tag }}
       - name: Configure
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
       - name: Build
@@ -46,7 +55,7 @@ jobs:
           cmake --install build --config Release --prefix package
           Copy-Item LICENSE, README.md -Destination package
           Compress-Archive -Path package\* -DestinationPath rudy-sbom-delta-${{ matrix.platform }}.zip
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: rudy-sbom-${{ matrix.platform }}
           path: rudy-sbom-delta-${{ matrix.platform }}.${{ matrix.archive }}
@@ -60,7 +69,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: rudy-sbom-*
           path: release-assets
@@ -68,9 +77,9 @@ jobs:
       - name: Generate SHA-256 checksums
         working-directory: release-assets
         run: sha256sum rudy-sbom-delta-* > SHA256SUMS
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ github.event.release.tag_name }}
+          tag_name: ${{ github.event.release.tag_name || inputs.release_tag }}
           files: release-assets/*
           overwrite_files: true
           fail_on_unmatched_files: true
