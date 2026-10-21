@@ -85,6 +85,18 @@ int main() {
     const auto identical = rudy::sbom::compare(rudy::sbom::load_document(same_path), rudy::sbom::load_document(same_path));
     check(identical.changes.empty(), "identical SBOMs must produce no changes");
 
+    const auto qualifiers_old = write_temp(directory, "qualifiers-old.json", R"({"spdxVersion":"SPDX-2.3","packages":[
+      {"name":"lib","versionInfo":"1","externalRefs":[{"referenceType":"purl","referenceLocator":"pkg:generic/lib@1?arch=x86"}]}
+    ]})");
+    const auto qualifiers_new = write_temp(directory, "qualifiers-new.json", R"({"spdxVersion":"SPDX-2.3","packages":[
+      {"name":"lib","versionInfo":"2","externalRefs":[{"referenceType":"purl","referenceLocator":"pkg:generic/lib@2?arch=arm"}]}
+    ]})");
+    const auto qualifier_report = rudy::sbom::compare(rudy::sbom::load_document(qualifiers_old), rudy::sbom::load_document(qualifiers_new));
+    check(count(qualifier_report, rudy::sbom::ChangeKind::version) == 0U &&
+          count(qualifier_report, rudy::sbom::ChangeKind::added) == 1U &&
+          count(qualifier_report, rudy::sbom::ChangeKind::removed) == 1U,
+          "PURL qualifiers must remain part of component identity");
+
     const auto malformed = write_temp(directory, "malformed.json", R"({"spdxVersion":"SPDX-2.3","packages":[],"packages":[]})");
     bool rejected = false;
     try { (void)rudy::sbom::load_document(malformed); }

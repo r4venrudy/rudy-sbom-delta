@@ -8,7 +8,7 @@ Rudy SBOM Delta is an offline comparison and policy-gating CLI. It reads two loc
 - CycloneDX JSON with `bomFormat == "CycloneDX"` and `specVersion` 1.4, 1.5, 1.6, or 1.7. The metadata root component and nested components are included. A PURL is used when present; generated `bom-ref` values are deliberately ignored because they are often unstable between builds.
 - XML, SPDX 3.x, and CycloneDX Protobuf are outside this release's scope.
 
-PURL comparison removes the package version and query/fragment suffix before matching. This allows a release change to appear as a version update rather than unrelated add/remove events. Without a PURL, name matching can merge same-named packages from separate namespaces; review the identity shown in output and include PURLs in generated SBOMs for better matching.
+PURL comparison removes the package version while preserving query qualifiers and fragments. This allows a release change to appear as a version update rather than unrelated add/remove events, while keeping qualifier variants distinct. Without a PURL, name matching can merge same-named packages from separate namespaces; review the identity shown in output and include PURLs in generated SBOMs for better matching.
 
 The tool compares version strings, one selected checksum (SHA-256 when available, otherwise the first recorded checksum), and declared license data. CycloneDX license entries are collected and sorted for stable comparison; this is not a license-expression evaluator. `--deny-license` matches exact identifier tokens, case-insensitively, in candidate license text. It does not determine legal compatibility, interpret exceptions, or replace counsel or a dedicated license-compliance system.
 

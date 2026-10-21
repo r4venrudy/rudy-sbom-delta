@@ -262,11 +262,14 @@ std::string lower_ascii(std::string value) {
 
 std::string purl_identity(std::string purl) {
   purl = trim(std::move(purl));
-  const std::size_t suffix = purl.find_first_of("?#");
-  if (suffix != std::string::npos) purl.resize(suffix);
-  const std::size_t slash = purl.find_last_of('/');
-  const std::size_t at = purl.find_last_of('@');
-  if (at != std::string::npos && (slash == std::string::npos || at > slash)) purl.resize(at);
+  const std::size_t query = purl.find('?');
+  const std::size_t fragment = purl.find('#');
+  const std::size_t suffix = std::min(query == std::string::npos ? purl.size() : query,
+                                      fragment == std::string::npos ? purl.size() : fragment);
+  const std::size_t slash = suffix == 0U ? std::string::npos : purl.rfind('/', suffix - 1U);
+  const std::size_t at = purl.rfind('@', suffix);
+  if (at != std::string::npos && at < suffix && (slash == std::string::npos || at > slash))
+    purl.erase(at, suffix - at);
   return lower_ascii(std::move(purl));
 }
 
