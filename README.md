@@ -77,10 +77,13 @@ This is an inventory comparison and build-policy utility. It does not discover v
 | `tests/` | Format, normalization, safety, policy, and CLI integration tests |
 | `examples/` | Small SPDX and CycloneDX inputs for a cross-format diff |
 | `.github/workflows/ci.yml` | Linux, macOS, Windows, plus Linux ASan/UBSan validation |
+| `.github/workflows/release.yml` | Tested Linux, macOS, and Windows archives with SHA-256 checksums |
 
 ## Validation
 
 CI builds with C++20 on Linux, macOS, and Windows, runs the core and CLI tests, and exercises the parser with AddressSanitizer and UndefinedBehaviorSanitizer on Linux.
+
+Tagged GitHub releases build tested platform archives and attach a `SHA256SUMS` manifest for verification.
 
 ## License
 
