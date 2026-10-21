@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-labelledby="title desc">
+  <title id="title">Rudy SBOM Delta</title>
+  <desc id="desc">Offline software inventory comparison and policy gate.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111c"/><stop offset="1" stop-color="#101f2b"/></linearGradient>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#203744" stroke-width="1"/></pattern>
+  </defs>
+  <rect width="1200" height="300" rx="22" fill="url(#bg)"/>
+  <rect width="1200" height="300" rx="22" fill="url(#grid)" opacity=".55"/>
+  <rect x="0" y="0" width="8" height="300" rx="4" fill="#55e0b6"/>
+  <text x="70" y="65" fill="#55e0b6" font-family="Consolas,monospace" font-size="18" letter-spacing="4">RUDY SYSTEMS / SUPPLY CHAIN</text>
+  <text x="68" y="145" fill="#f3f7fb" font-family="Segoe UI,Arial,sans-serif" font-size="64" font-weight="700">Rudy SBOM Delta</text>
+  <text x="72" y="194" fill="#a9c3d5" font-family="Segoe UI,Arial,sans-serif" font-size="25">Track dependency drift. Gate policy changes. Stay offline.</text>
+  <path d="M800 75h290v52H800zm0 72h290v52H800zm0 72h290v34H800z" fill="#0d1a25" stroke="#294353" stroke-width="2"/>
+  <text x="830" y="109" fill="#55e0b6" font-family="Consolas,monospace" font-size="18">BASELINE  →  CANDIDATE</text>
+  <text x="830" y="181" fill="#77b8ed" font-family="Consolas,monospace" font-size="18">VERSION / HASH / LICENSE</text>
+  <text x="830" y="241" fill="#f3f7fb" font-family="Consolas,monospace" font-size="18">CI EXIT GATE</text>
+</svg>

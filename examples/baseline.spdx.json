@@ -1,0 +1,17 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "packages": [
+    {
+      "name": "libcurl",
+      "versionInfo": "8.4.0",
+      "licenseConcluded": "curl",
+      "checksums": [{ "algorithm": "SHA256", "checksumValue": "90ab" }],
+      "externalRefs": [{
+        "referenceCategory": "PACKAGE-MANAGER",
+        "referenceType": "purl",
+        "referenceLocator": "pkg:generic/libcurl@8.4.0"
+      }]
+    },
+    { "name": "old-helper", "versionInfo": "1.0", "licenseDeclared": "MIT" }
+  ]
+}
