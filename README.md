@@ -62,6 +62,8 @@ rudy-sbom-delta --deny-license GPL-3.0-only --require-hashes baseline.json candi
 
 `--fail-on any` treats any reported drift as a failing build. License denial checks exact identifier tokens case-insensitively; it does not evaluate full SPDX expressions or make legal determinations.
 
+CSV fields use literal `\xNN` escapes for leading formula characters (`=`, `+`, `-`, `@`, including full-width variants), whitespace/control bytes, and UTF-8 BOMs. This keeps untrusted SBOM values from becoming spreadsheet formulas. Use JSON to preserve the original values for programmatic processing.
+
 ## Format and scope
 
 Rudy SBOM Delta supports SPDX JSON 2.2/2.3 and CycloneDX JSON 1.4–1.7. It does not currently read XML, SPDX 3.x, or CycloneDX Protobuf. Matching by name alone can conflate same-named components in different namespaces; include PURLs in generated SBOMs where available. Hash comparison selects SHA-256 when present, otherwise the first recorded checksum.

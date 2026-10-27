@@ -110,7 +110,26 @@ std::string json_escape(const std::string& input) {
 
 std::string csv_escape(const std::string& input) {
   std::string output = "\"";
-  for (char c : input) {
+  std::size_t escaped_prefix = 0;
+  if (!input.empty()) {
+    const auto first = static_cast<unsigned char>(input.front());
+    if (first <= 0x20U || first == 0x7fU || std::string_view("=+-@").find(input.front()) != std::string_view::npos)
+      escaped_prefix = 1;
+    // Full-width formula starters and a leading UTF-8 BOM can also be
+    // interpreted specially by spreadsheet applications in some locales.
+    for (const auto* prefix : {"\xef\xbc\x9d", "\xef\xbc\x8b", "\xef\xbc\x8d", "\xef\xbc\xa0", "\xef\xbb\xbf"})
+      if (input.starts_with(prefix)) escaped_prefix = 3;
+  }
+  constexpr char hex[] = "0123456789abcdef";
+  for (std::size_t i = 0; i < input.size(); ++i) {
+    const char c = input[i];
+    if (i < escaped_prefix) {
+      const auto byte = static_cast<unsigned char>(c);
+      output += "\\x";
+      output.push_back(hex[byte >> 4U]);
+      output.push_back(hex[byte & 0x0fU]);
+      continue;
+    }
     if (c == '"') output += "\"\"";
     else output.push_back(c);
   }
