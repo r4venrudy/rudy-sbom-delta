@@ -32,7 +32,7 @@ jobs:
             platform: windows-x64
             archive: zip
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.event.release.tag_name || inputs.release_tag }}
       - name: Configure
@@ -55,7 +55,7 @@ jobs:
           cmake --install build --config Release --prefix package
           Copy-Item LICENSE, README.md -Destination package
           Compress-Archive -Path package\* -DestinationPath rudy-sbom-delta-${{ matrix.platform }}.zip
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: rudy-sbom-${{ matrix.platform }}
           path: rudy-sbom-delta-${{ matrix.platform }}.${{ matrix.archive }}
@@ -69,7 +69,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           pattern: rudy-sbom-*
           path: release-assets
@@ -77,7 +77,7 @@ jobs:
       - name: Generate SHA-256 checksums
         working-directory: release-assets
         run: sha256sum rudy-sbom-delta-* > SHA256SUMS
-      - uses: softprops/action-gh-release@v3
+      - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
         with:
           tag_name: ${{ github.event.release.tag_name || inputs.release_tag }}
           files: release-assets/*
