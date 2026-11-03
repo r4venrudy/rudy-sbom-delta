@@ -84,6 +84,8 @@ jobs:
       - name: Generate SHA-256 checksums
         working-directory: release-assets
         run: sha256sum rudy-sbom-delta-* > SHA256SUMS
+      - name: Verify release SHA-256 manifest
+        run: python .github/scripts/release_checksums.py release-assets
       - name: Verify release archive integrity
         run: python .github/scripts/release_guard.py release-assets
       - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
